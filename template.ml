@@ -6,10 +6,9 @@ let my_input_filename =
 let my_input_file = open_in my_input_filename in
 let my_input = (* input_ *) my_input_file in
 let () = close_in my_input_file in
-(* data parsing here *)
-let result1 = (* solver1 *) in
-let () = (* print_ *) result1 in
-let () = print_newline () in
-let result2 = (* solver2 *) in
-let () = (* print_ *) result2 in
+let result1 = solver1 my_input in
+let () = print_int result1 in
+(* let () = print_newline () in
+let result2 = solver2 my_input in
+let () = print_int result2 in *)
 print_newline ();;
