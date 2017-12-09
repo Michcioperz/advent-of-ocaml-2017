@@ -2,21 +2,21 @@ let my_input_filename =
   String.lowercase_ascii __MODULE__ ^ ".input";;
 
 let rev_input_lines chan =
-  let loop acc =
+  let rec loop acc =
     try
       loop (input_line chan :: acc)
     with End_of_file -> acc
   in loop []
 
-module Ints =
+module Strings =
   struct
-    type t = int
+    type t = string
     let compare x y =
       Pervasives.compare x y
   end
 
 module RegisterMap = struct
-  include Map.Make(Ints)
+  include Map.Make(Strings)
   let find_or_zero x m =
     match find_opt x m with
     | Some y -> y
@@ -27,9 +27,9 @@ module RegisterMap = struct
     else
       m
   let fold_exe m ls =
-    fold execute m ls
+    List.fold_left execute m ls
   let max_value m =
-    fold max m 0
+    fold (fun _ -> max) m 0
 end
 
 type instruction = (string * (int -> int)) * (string * (int -> bool))
@@ -50,7 +50,7 @@ let parse_instruction str =
   let () = assert (word_if = "if") in
   let condition_reg :: parts = parts in
   let condition_op :: parts = parts in
-  let condition_op = match op with
+  let condition_op = match condition_op with
   | ">" -> ( > )
   | "<" -> ( < )
   | ">=" -> ( >= )
@@ -70,7 +70,7 @@ let parse_rev_instructions lines =
 
 
 let solver1 instructions =
-  let registers = RegisterMap.fold_exe RegisterMap.empty instruction in
+  let registers = RegisterMap.fold_exe RegisterMap.empty instructions in
   RegisterMap.max_value registers;;
 
 let my_input_file = open_in my_input_filename in
